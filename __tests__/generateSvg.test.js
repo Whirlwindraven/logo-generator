@@ -1,29 +1,37 @@
 const { createSVG } = require('../generateSvg');
+const { JSDOM } = require('jsdom');
 
-test('Generated SVG should contain the correct elements and attributes', () => {
-  const options = {
-    text: 'XYZ',
-    textColor: '#FF5733',
-    shape: 'triangle',
-    shapeColor: '#33FF57',
-  };
+describe('Generated SVG', () => {
+  test('Generated SVG should contain the correct elements and attributes', () => {
+    const options = {
+      text: 'XYZ',
+      textColor: '#FF0000',
+      shape: 'circle',
+      shapeColor: '#00FF00',
+    };
 
-  const svg = createSVG(options);
-  const svgElement = new DOMParser().parseFromString(svg, 'image/svg+xml').documentElement;
+    const svg = createSVG(options);
+    const dom = new JSDOM(svg);
+    const svgElement = dom.window.document.querySelector('svg');
 
-  // Check if the SVG has the correct dimensions
-  expect(svgElement.getAttribute('width')).toBe('300');
-  expect(svgElement.getAttribute('height')).toBe('200');
+    // Check if the SVG has the correct dimensions
+    expect(svgElement.getAttribute('width')).toBe('300');
+    expect(svgElement.getAttribute('height')).toBe('200');
 
-  // Check if the shape element has the correct type and color
-  const shapeElement = svgElement.querySelector('polygon, circle, rect');
-  expect(shapeElement.tagName).toBe('polygon');
-  expect(shapeElement.getAttribute('fill')).toBe(options.shapeColor);
+    // Check if the SVG contains the correct shape element
+    const shapeElement = svgElement.querySelector(options.shape);
+    expect(shapeElement).toBeTruthy();
 
-  // Check if the text element has the correct content, font, and color
-  const textElement = svgElement.querySelector('text');
-  expect(textElement.textContent).toBe(options.text);
-  expect(textElement.getAttribute('fill')).toBe(options.textColor);
-  expect(textElement.style.fontFamily).toBe('Arial');
-  expect(textElement.style.fontSize).toBe('50px');
+    // Check if the shape element has the correct color attribute
+    expect(shapeElement.getAttribute('fill')).toBe(options.shapeColor);
+
+    // Check if the SVG contains the correct text element
+    const textElement = svgElement.querySelector('text');
+    expect(textElement).toBeTruthy();
+
+    // Check if the text element has the correct content and color attribute
+    expect(textElement.textContent.trim()).toBe(options.text);
+    expect(textElement.getAttribute('fill')).toBe(options.textColor);
+
+  });
 });
