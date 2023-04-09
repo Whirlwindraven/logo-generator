@@ -1,31 +1,45 @@
-const SVG = require('svg.js');
-
 function createSVG({ text, textColor, shape, shapeColor }) {
-  const width = 300;
-  const height = 200;
-
-  const draw = SVG().size(width, height);
-  let shapeElement;
-
-  switch (shape) {
-    case 'circle':
-      shapeElement = draw.circle(Math.min(width, height) / 2).center(width / 2, height / 2);
-      break;
-    case 'triangle':
-      shapeElement = draw.polygon('0,200 300,200 150,0');
-      break;
-    case 'square':
-      shapeElement = draw.rect(width / 2, height / 2).center(width / 2, height / 2);
-      break;
+    const width = 300;
+    const height = 200;
+  
+    const shapeElement = createShapeElement(shape, shapeColor);
+    const textElement = createTextElement(text, textColor);
+  
+    return `
+      <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+        ${shapeElement}
+        ${textElement}
+      </svg>
+    `;
   }
-
-  shapeElement.fill(shapeColor);
-
-  const textElement = draw.text(text).font({ family: 'Arial', size: 50 });
-  textElement.move(width / 2 - textElement.bbox().width / 2, height / 2 - textElement.bbox().height / 2);
-  textElement.fill(textColor);
-
-  return draw.svg();
-}
-
-module.exports = { createSVG };
+  
+  function createShapeElement(shape, shapeColor) {
+    let shapeElement;
+  
+    switch (shape) {
+      case 'circle':
+        shapeElement = `<circle cx="150" cy="100" r="50" fill="${shapeColor}" />`;
+        break;
+      case 'triangle':
+        shapeElement = `<polygon points="150,50 250,150 50,150" fill="${shapeColor}" />`;
+        break;
+      case 'square':
+        shapeElement = `<rect x="100" y="50" width="100" height="100" fill="${shapeColor}" />`;
+        break;
+    }
+  
+    return shapeElement;
+  }
+  
+  function createTextElement(text, textColor) {
+    return `
+      <text x="150" y="100" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="24px" fill="${textColor}">
+        ${text}
+      </text>
+    `;
+  }
+  
+  module.exports = {
+    createSVG,
+  };
+  
