@@ -17,7 +17,7 @@
 A Node.js logo generator applicattion that uses multiple npm libraries to fabricated a new logo based on user answers to question prompts once the application is run 
 
 ## Video-demo
-Video demo can be accessed [here]()
+Video demo can be accessed [here](https://youtu.be/v6CWUtHllvo)
 
 ## Usage
 Free use to make any basic logo.
